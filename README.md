@@ -2,7 +2,7 @@
 
 Interact with [Online C14](https://www.online.net/en/c14) API from the command line.
 
-![Online C14 logo](https://raw.githubusercontent.com/online-net/c14-cli/master/assets/logo.png)
+![Online C14 logo](https://raw.githubusercontent.com/scaleway/c14-cli/master/assets/logo.png)
 
 #### Table of Contents
 
@@ -21,6 +21,8 @@ Interact with [Online C14](https://www.online.net/en/c14) API from the command l
     * [`remove`](#c14-remove)
     * [`unfreeze`](#c14-unfreeze)
     * [`upload`](#c14-upload)
+    * [`version`](#c14-version)
+    * [`download`](#c14-download)
   * [Examples](#examples)
 4. [Changelog](#changelog)
 5. [Development](#development)
@@ -36,7 +38,7 @@ A command-line tool to manage your C14 storage easily
 ⚠️ Ensure you have a go version >= 1.6
 
 ```shell
-go get -u github.com/online-net/c14-cli/cmd/c14
+go get -u github.com/scaleway/c14-cli/cmd/c14
 ```
 
 ## Usage
@@ -64,6 +66,8 @@ Commands:
     unfreeze  Unlock an archive
     upload    Upload your file or directory into an archive
     bucket    Displays all information of bucket
+    version   Show the version information
+    download  Download your file or directory into an archive
 
 Run 'c14 COMMAND --help' for more information on a command.
 ```
@@ -84,25 +88,27 @@ $
 ```console
 Usage: c14 create [OPTIONS]
 
-Create a new archive, by default with a random name, standard storage (0.0002€/GB/month), automatic locked in 7 days and your datas will be stored at DC2.
+Create a new archive, by default with a random name, standard storage (0.0002€/GB/month), automatic locked in 7 days and your datas will be stored in the choosen platform (by default at DC4).
 
 Options:
-  -c, --crypto=aes-256-cbc  Which cryptography to use: aes-256-cbc or none
-  -d, --description=""      Assigns a description
-  -h, --help=false          Print usage
-  -n, --name=""             Assigns a name
-  -q, --quiet=false         Don't display the waiting loop
-  -s, --safe=""             Name of the safe to use. If it doesn't exists it will be created.
-  -p, --parity="standard"   Specify a parity to use
-  -l, --large=false         Ask for a large bucket
-  -k, --sshkey              A list of SSH Key UUIDs separated by a comma that will be used for the connection.
+  -c, --crypto=true     Enable aes-256-bc cryptography, enabled by default.
+  -d, --description=""  Assigns a description
+  -h, --help=false      Print usage
+  -k, --sshkey=""       A list of UUIDs corresponding to the SSH keys (separated by a comma) that will be used for the connection.
+  -l, --large=false     Ask for a large bucket
+  -n, --name=""         Assigns a name
+  -P, --platform=2      Select the platform (by default at DC4)
+  -p, --parity=standard Specify a parity to use
+  -q, --quiet=false     Don't display the waiting loop
+  -s, --safe=""         Name of the safe to use. If it doesn't exists it will be created.
 
 Examples:
         $ c14 create
-        $ c14 create --name "MyBooks" --description "hardware books"
-        $ c14 create --name "MyBooks" --description "hardware books" --safe "Bookshelf"
-```
+        $ c14 create --name "MyBooks" --description "hardware books" -P 1
+        $ c14 create --name "MyBooks" --description "hardware books" --safe "Bookshelf" --platform 2
+        $ c14 create --sshkey "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx,xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
 
+```
 
 #### `c14 freeze`
 
@@ -255,6 +261,21 @@ Examples:
         $ tar cvf - /upload 2> /dev/null | ./c14 upload --name "file.tar.gz" fervent_austin
 ```
 
+#### `c14 download`
+
+```console
+Usage: c14 download [DIR|FILE]* ARCHIVE
+
+Download your file or directory into an archive, use SFTP protocol.
+
+Options:
+  -h, --help=false      Print usage
+
+Examples:
+        $ c14 download
+        $ c14 download file 83b93179-32e0-11e6-be10-10604b9b0ad9
+```
+
 #### `c14 bucket`
 
 ```console
@@ -270,6 +291,20 @@ Examples:
         $ c14 bucket
         $ c14 bucket 83b93179-32e0-11e6-be10-10604b9b0ad9
         $ c14 bucket -p 83b93179-32e0-11e6-be10-10604b9b0ad9
+```
+
+#### `c14 version`
+
+```console
+Usage: c14 version
+
+Show the version information.
+
+Options:
+  -h, --help=false      Print usage
+
+Examples:
+        $ c14 version
 ```
 
 
@@ -295,6 +330,8 @@ Soon
  * Support of `remove` command
  * Support of `unfreeze` command
  * Support of `upload` command
+ * Support of `version` command
+ * Support of `download` command
 
 ---
 
@@ -309,14 +346,14 @@ Feel free to contribute :smiley::beers:
 2. Ensure you have `$GOPATH` and `$PATH` well configured, something like:
   * `export GOPATH=$HOME/go`
   * `export PATH=$PATH:$GOPATH/bin`
-3. Fetch the project: `go get -u github.com/online-net/c14-cli`
-4. Go to c14-cli directory: `cd $GOPATH/src/github.com/online-net/c14-cli`
+3. Fetch the project: `go get -u github.com/scaleway/c14-cli`
+4. Go to c14-cli directory: `cd $GOPATH/src/github.com/scaleway/c14-cli`
 5. Hack: `vim`
 6. Build: `make`
 7. Run: `./c14`
 
 ## License
 
-[MIT](https://github.com/online-net/c14-cli/blob/master/LICENSE.md)
+[MIT](https://github.com/scaleway/c14-cli/blob/master/LICENSE.md)
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
